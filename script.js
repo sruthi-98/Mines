@@ -130,7 +130,7 @@ class CellGrid {
     grid.classList.add("cell-grid");
     grid.style.setProperty("--rows", this.#rows);
     grid.style.setProperty("--columns", this.#columns);
-    document.body.appendChild(grid);
+    document.body.prepend(grid);
     return grid;
   }
 
