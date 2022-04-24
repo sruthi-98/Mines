@@ -10,27 +10,55 @@
 body {
   min-height: 100vh;
   background-color: hsl(0, 0%, 20%);
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  grid-gap: 2.5rem;
+  padding: 2rem 1rem;
+  width: min-content;
+  margin-inline: auto;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  color: hsl(0, 0%, 100%);
+}
+
+.heading {
+  font-size: clamp(1.5rem, 5vmin, 3rem);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.flag-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  grid-gap: 0.5rem;
+  font-size: clamp(0.875rem, 2vmin, 1.25rem);
+  background-color: hsl(0, 0%, 18%);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
 }
 
 .cell-grid {
   --rows: 8;
   --columns: 8;
   display: grid;
-  grid-template-columns: repeat(var(--columns), 2.5rem);
-  grid-template-rows: repeat(var(--rows), 2.5rem);
+  grid-template-columns: repeat(var(--columns),  min(5rem, 4.5vmax));
+  grid-template-rows: repeat(var(--rows), min(5rem, 4.5vmax));
   grid-gap: 0.25rem;
+  place-content: center;
 }
 
 .cell {
   display: grid;
   place-content: center;
   cursor: pointer;
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 3vmin, 2rem);
   font-weight: 800;
   background-color: hsl(0, 1%, 65%);
-  border-radius: 5px;
+  border-radius: min(1.25rem, 1vmin);
   user-select: none;
   transition: background-color 150ms ease-in-out;
 }
@@ -46,6 +74,7 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-color: hsl(0, 1%, 45%);
+  background-size: 45%;
 }
 
 .cell[data-type="mine"] {
@@ -60,6 +89,7 @@ body {
 .cell[data-type="flag-doubt"] {
   background-color: hsl(0, 1%, 80%);
   background-image: url(./images/flag.svg);
+  background-size: 30%;
 }
 
 .cell[data-type="flag-doubt"] {
@@ -83,29 +113,29 @@ body {
 }
 
 .cell[data-number="2"] {
-  --lightness: 50%;
+  --lightness: 55%;
 }
 
 .cell[data-number="3"] {
-  --lightness: 40%;
+  --lightness: 45%;
 }
 
 .cell[data-number="4"] {
-  --lightness: 30%;
+  --lightness: 40%;
 }
 
 .cell[data-number="5"] {
-  --lightness: 27.5%;
+  --lightness: 37.5%;
 }
 
 .cell[data-number="6"] {
-  --lightness: 25%;
+  --lightness: 35%;
 }
 
 .cell[data-number="7"] {
-  --lightness: 22.5%;
+  --lightness: 32.5%;
 }
 
 .cell[data-number="8"] {
-  --lightness: 20%;
+  --lightness: 30%;
 }

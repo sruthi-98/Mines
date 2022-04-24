@@ -1,3 +1,6 @@
+const currentFlagCount = document.querySelector("[data-current-flag-count]");
+const totalFlagCount = document.querySelector("[data-total-flag-count]");
+
 class Cell {
   #row;
   #column;
@@ -73,6 +76,7 @@ class Cell {
       },
       { once: true }
     );
+    
     cell.addEventListener("contextmenu", (event) => {
       event.preventDefault();
       const cellDataType = cell.getAttribute("data-type");
@@ -80,15 +84,20 @@ class Cell {
         ...document.querySelectorAll('.cell[data-type="flag"]'),
       ].length;
 
-      if (cellDataType && cellDataType === "flag")
+      if (cellDataType && cellDataType === "flag") {
         cell.setAttribute("data-type", "flag-doubt");
-      else if (cellDataType && cellDataType === "flag-doubt")
+        currentFlagCount.innerText = Number(currentFlagCount.innerText) - 1;
+      } else if (cellDataType && cellDataType === "flag-doubt") {
         cell.removeAttribute("data-type");
-      else
+      } else {
         cell.setAttribute(
           "data-type",
           flagCellsCount < grid.mines ? "flag" : "flag-doubt"
         );
+        currentFlagCount.innerText =
+          Number(currentFlagCount.innerText) +
+          (flagCellsCount < grid.mines ? 1 : 0);
+      }
     });
     this.#cell = cell;
     return cell;
@@ -108,6 +117,9 @@ class CellGrid {
     this.#mines = mines;
     this.#grid = this.createGrid();
     this.#cells = [];
+
+    currentFlagCount.innerText = 0;
+    totalFlagCount.innerText = mines;
 
     this.initialize = this.initialize.bind(this);
     this.openSurroundingCells = this.openSurroundingCells.bind(this);
@@ -130,7 +142,7 @@ class CellGrid {
     grid.classList.add("cell-grid");
     grid.style.setProperty("--rows", this.#rows);
     grid.style.setProperty("--columns", this.#columns);
-    document.body.prepend(grid);
+    document.body.append(grid);
     return grid;
   }
 
