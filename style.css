@@ -45,7 +45,7 @@ header {
   --rows: 8;
   --columns: 8;
   display: grid;
-  grid-template-columns: repeat(var(--columns),  min(5rem, 4.5vmax));
+  grid-template-columns: repeat(var(--columns), min(5rem, 4.5vmax));
   grid-template-rows: repeat(var(--rows), min(5rem, 4.5vmax));
   grid-gap: 0.25rem;
   place-content: center;
@@ -70,7 +70,8 @@ header {
 .cell[data-type="mine"],
 .cell[data-type="mine-opened"],
 .cell[data-type="flag"],
-.cell[data-type="flag-doubt"] {
+.cell[data-type="flag-doubt"],
+.cell[data-type="flag-mine"] {
   background-repeat: no-repeat;
   background-position: center;
   background-color: hsl(0, 1%, 45%);
@@ -86,7 +87,8 @@ header {
 }
 
 .cell[data-type="flag"],
-.cell[data-type="flag-doubt"] {
+.cell[data-type="flag-doubt"],
+.cell[data-type="flag-mine"] {
   background-color: hsl(0, 1%, 80%);
   background-image: url(./images/flag.svg);
   background-size: 30%;
@@ -94,6 +96,10 @@ header {
 
 .cell[data-type="flag-doubt"] {
   background-image: url(./images/flag-doubt.svg);
+}
+
+.cell[data-type="flag-mine"] {
+  background-color: hsl(0, 65%, 51%);
 }
 
 .cell[data-type="empty"] {

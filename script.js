@@ -76,7 +76,7 @@ class Cell {
       },
       { once: true }
     );
-    
+
     cell.addEventListener("contextmenu", (event) => {
       event.preventDefault();
       const cellDataType = cell.getAttribute("data-type");
@@ -233,13 +233,18 @@ class CellGrid {
       alert("GAME LOST!");
       this.removeAllCells();
       this.initialSetup();
+      currentFlagCount.innerText = 0;
     }, 500);
   }
 
   openAllMineCells() {
     this.getAllCells().map((cell) => {
-      if (cell.isMine && !cell.open)
-        cell.getCellElement().setAttribute("data-type", "mine");
+      if (cell.isMine && !cell.open) {
+        const cellElement = cell.getCellElement();
+        if (cellElement.getAttribute("data-type") === "flag")
+          cellElement.setAttribute("data-type", "flag-mine");
+        else cellElement.setAttribute("data-type", "mine");
+      }
     });
   }
 
@@ -263,6 +268,7 @@ class CellGrid {
       alert("YOU WON!");
       this.removeAllCells();
       this.initialSetup();
+      currentFlagCount.innerText = 0;
     }, 500);
   }
 }
