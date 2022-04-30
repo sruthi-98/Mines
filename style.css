@@ -30,6 +30,13 @@ header {
   font-weight: 600;
 }
 
+select {
+  margin-top: 1rem;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
+
 .flag-count {
   display: flex;
   flex-direction: column;
@@ -39,6 +46,7 @@ header {
   background-color: hsl(0, 0%, 18%);
   padding: 0.5rem 1rem;
   border-radius: 5px;
+  height: min-content;
 }
 
 .cell-grid {

@@ -134,6 +134,11 @@ class CellGrid {
     return this.#mines;
   }
 
+  set mines(mines) {
+    this.#mines = mines;
+    totalFlagCount.innerText = mines;
+  }
+
   initialSetup() {
     this.initialize();
     this.placeMines();
@@ -230,13 +235,18 @@ class CellGrid {
     });
   }
 
+  remove(mines) {
+    this.removeAllCells();
+    currentFlagCount.innerText = 0;
+    if (mines) this.mines = mines;
+    this.initialSetup();
+  }
+
   gameLost() {
     this.openAllMineCells();
     setTimeout(() => {
       alert("GAME LOST!");
-      this.removeAllCells();
-      this.initialSetup();
-      currentFlagCount.innerText = 0;
+      this.remove();
     }, 500);
   }
 
@@ -269,9 +279,7 @@ class CellGrid {
   gameWon() {
     setTimeout(() => {
       alert("YOU WON!");
-      this.removeAllCells();
-      this.initialSetup();
-      currentFlagCount.innerText = 0;
+      this.remove();
     }, 500);
   }
 }
@@ -280,4 +288,10 @@ function generateRandomPosition(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-const cellGrid = new CellGrid(8, 8, 10);
+const difficulty = document.querySelector("[data-difficulty]");
+
+let cellGrid = new CellGrid(8, 8, difficulty.value);
+
+difficulty.addEventListener("change", (event) =>
+  cellGrid.remove(event.target.value)
+);
