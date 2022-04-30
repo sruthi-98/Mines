@@ -79,6 +79,9 @@ class Cell {
 
     cell.addEventListener("contextmenu", (event) => {
       event.preventDefault();
+
+      if (["empty", "count"].includes(cell.getAttribute("data-type"))) return;
+
       const cellDataType = cell.getAttribute("data-type");
       const flagCellsCount = [
         ...document.querySelectorAll('.cell[data-type="flag"]'),
