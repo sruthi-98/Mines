@@ -12,15 +12,18 @@ body {
   background-color: hsl(0, 0%, 20%);
   display: flex;
   flex-direction: column;
-  grid-gap: 2.5rem;
+  grid-gap: 4rem;
   padding: 2rem 1rem;
   width: min-content;
   margin-inline: auto;
 }
 
 header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(2, auto);
+  grid-template-areas: "heading actions" "difficulty pause";
+  grid-gap: 1rem;
   color: hsl(0, 0%, 100%);
 }
 
@@ -28,18 +31,22 @@ header {
   font-size: clamp(1.5rem, 5vmin, 3rem);
   text-transform: uppercase;
   font-weight: 600;
+  grid-area: heading;
 }
 
 select {
-  margin-top: 1rem;
   font-size: 1rem;
   padding: 0.5rem 1rem;
   border-radius: 5px;
+  grid-area: difficulty;
+  width: min-content;
 }
 
 .actions {
   display: flex;
+  justify-content: flex-end;
   grid-gap: 0.5rem;
+  grid-area: actions;
 }
 
 .timer,
@@ -56,25 +63,58 @@ select {
   border-radius: 5px;
 }
 
+.pause-button {
+  border: 0;
+  cursor: pointer;
+  display: block;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  background-color: hsl(0, 0%, 18%);
+  border: 2px solid hsl(0, 0%, 15%);
+  color: white;
+  font-weight: 600;
+  grid-area: pause;
+  justify-self: flex-end;
+  width: 7.5rem;
+}
+
+.pause-button:disabled {
+  cursor: not-allowed;
+}
+
 .cell-grid {
   --rows: 8;
   --columns: 8;
   display: grid;
-  grid-template-columns: repeat(var(--columns), min(5rem, 4.5vmax));
-  grid-template-rows: repeat(var(--rows), min(5rem, 4.5vmax));
+  grid-template-columns: repeat(var(--columns), min(4.5rem, 4vmax));
+  grid-template-rows: repeat(var(--rows), min(4.5rem, 4vmax));
   grid-gap: 0.25rem;
   place-content: center;
+  position: relative;
 }
 
+.cell-grid.paused::before {
+  content: "Paused";
+  position: absolute;
+  inset: 0 0 auto 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cell-grid.paused::before,
 .cell {
   display: grid;
   place-content: center;
-  cursor: pointer;
-  font-size: clamp(1rem, 3vmin, 2rem);
-  font-weight: 800;
   background-color: hsl(0, 1%, 65%);
   border-radius: min(1.25rem, 1vmin);
+  font-size: clamp(1rem, 3vmin, 2rem);
+  font-weight: 800;
   user-select: none;
+}
+
+.cell {
+  cursor: pointer;
   transition: background-color 150ms ease-in-out;
 }
 
