@@ -51,14 +51,14 @@ select {
 
 .timer,
 .flag-count {
-  width: 3.75rem;
+  width: clamp(3.75rem, 10vmin, 5rem);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  grid-gap: 0.5rem;
   font-size: clamp(0.875rem, 2vmin, 1.25rem);
   background-color: hsl(0, 0%, 18%);
+  grid-gap: 0.5rem;
   padding: 0.5rem;
   border-radius: 5px;
 }
@@ -69,6 +69,7 @@ select {
   display: block;
   padding: 0.75rem 2rem;
   font-size: 1rem;
+  text-transform: capitalize;
   border-radius: 5px;
   background-color: hsl(0, 0%, 18%);
   border: 2px solid hsl(0, 0%, 15%);
@@ -81,6 +82,7 @@ select {
 
 .pause-button:disabled {
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .cell-grid {
