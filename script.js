@@ -69,6 +69,12 @@ class Cell {
     cell.addEventListener(
       "click",
       () => {
+        if (grid.element.dataset.state === GRID_STATE.INITIAL) {
+          grid.element.dataset.state = GRID_STATE.PLAY;
+          startTimer();
+          pauseButton.disabled = false;
+        }
+
         const cellDataType = cell.getAttribute("data-type");
         if (cellDataType && cellDataType.startsWith("flag")) return;
 
@@ -161,6 +167,10 @@ class CellGrid {
     totalFlagCount.innerText = mines;
   }
 
+  get element() {
+    return this.#grid;
+  }
+
   initialSetup() {
     this.initialize();
     this.placeMines();
@@ -170,6 +180,7 @@ class CellGrid {
   createGrid() {
     const grid = document.createElement("div");
     grid.classList.add("cell-grid");
+    grid.dataset.state = GRID_STATE.INITIAL;
     grid.style.setProperty("--rows", this.#rows);
     grid.style.setProperty("--columns", this.#columns);
     document.body.append(grid);
@@ -262,6 +273,7 @@ class CellGrid {
     currentFlagCount.innerText = 0;
     if (mines) this.mines = mines;
     this.initialSetup();
+    resetTimer();
   }
 
   gameLost() {
@@ -311,9 +323,53 @@ function generateRandomPosition(min, max) {
 }
 
 const difficulty = document.querySelector("[data-difficulty]");
+const pauseButton = document.querySelector("[data-pause-button]");
+const minutes = document.querySelector("[data-minutes]");
+const seconds = document.querySelector("[data-seconds]");
+let timer;
 
 let cellGrid = new CellGrid(8, 8, difficulty.value);
 
 difficulty.addEventListener("change", (event) =>
   cellGrid.remove(event.target.value)
 );
+
+function addZeroPadding(value) {
+  return value.toString().padStart(2, "0");
+}
+
+// Timer
+function startTimer() {
+  timer = setInterval(() => {
+    if (seconds.textContent === "59")
+      minutes.textContent = addZeroPadding(Number(minutes.textContent) + 1);
+
+    seconds.textContent = addZeroPadding(
+      (Number(seconds.textContent) + 1) % 60
+    );
+  }, 1000);
+}
+
+function pauseTimer() {
+  clearInterval(timer);
+}
+
+function resetTimer() {
+  pauseTimer();
+  minutes.textContent = "00";
+  seconds.textContent = "00";
+  cellGrid.element.dataset.state = GRID_STATE.INITIAL;
+}
+
+// Pause / play
+function handlePause() {
+  const state = cellGrid.element.dataset.state;
+  const isPlay = state === GRID_STATE.PLAY;
+
+  cellGrid.element.classList.toggle("paused", isPlay);
+  pauseButton.textContent = state;
+  cellGrid.element.dataset.state = isPlay ? GRID_STATE.PAUSE : GRID_STATE.PLAY;
+  isPlay ? pauseTimer() : startTimer();
+}
+
+pauseButton.addEventListener("click", handlePause);
