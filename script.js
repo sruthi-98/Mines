@@ -362,14 +362,23 @@ function resetTimer() {
 }
 
 // Pause / play
-function handlePause() {
-  const state = cellGrid.element.dataset.state;
-  const isPlay = state === GRID_STATE.PLAY;
+function pauseGame() {
+  cellGrid.element.classList.add("paused");
+  pauseButton.textContent = GRID_STATE.PLAY;
+  cellGrid.element.dataset.state = GRID_STATE.PAUSE;
+  pauseTimer();
+}
 
-  cellGrid.element.classList.toggle("paused", isPlay);
-  pauseButton.textContent = state;
-  cellGrid.element.dataset.state = isPlay ? GRID_STATE.PAUSE : GRID_STATE.PLAY;
-  isPlay ? pauseTimer() : startTimer();
+function playGame() {
+  cellGrid.element.classList.remove("paused");
+  pauseButton.textContent = GRID_STATE.PAUSE;
+  cellGrid.element.dataset.state = GRID_STATE.PLAY;
+  startTimer();
+}
+
+function handlePause() {
+  if (cellGrid.element.dataset.state === GRID_STATE.PLAY) pauseGame();
+  else playGame();
 }
 
 pauseButton.addEventListener("click", handlePause);
