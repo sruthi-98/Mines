@@ -373,3 +373,16 @@ function handlePause() {
 }
 
 pauseButton.addEventListener("click", handlePause);
+
+// Detetct active tab change
+function handleTabInactivity() {
+  const visibility = document.visibilityState;
+  const gridState = cellGrid.element.dataset.state;
+
+  if (gridState === GRID_STATE.PLAY) {
+    if (visibility === "hidden") pauseTimer();
+    if (visibility === "visible") startTimer();
+  }
+}
+
+document.addEventListener("visibilitychange", handleTabInactivity);
