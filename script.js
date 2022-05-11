@@ -66,18 +66,22 @@ class Cell {
     const cell = document.createElement("div");
     cell.classList.add("cell");
     cell.setAttribute("data-type", CELL_TYPE.NEW);
+
     cell.addEventListener(
       "click",
       () => {
+        // Start timer for initial click on the cell
         if (grid.element.dataset.state === GRID_STATE.INITIAL) {
           grid.element.dataset.state = GRID_STATE.PLAY;
           startTimer();
           pauseButton.disabled = false;
         }
 
+        // Do nothing for flagged cells
         const cellDataType = cell.getAttribute("data-type");
         if (cellDataType && cellDataType.startsWith("flag")) return;
 
+        // Game is lost when a mine cell is opened
         this.open = true;
         if (this.#isMine) {
           cell.setAttribute("data-type", CELL_TYPE.MINEOPENED);
@@ -85,12 +89,14 @@ class Cell {
           return;
         }
 
+        // Recursively opening surrounding empty cells
         if (this.#mineCount === 0) {
           cell.setAttribute("data-type", CELL_TYPE.EMPTY);
           grid.openSurroundingCells(this);
           return;
         }
 
+        // Cells with surrounding mines
         cell.innerText = this.#mineCount;
         cell.setAttribute("data-type", CELL_TYPE.COUNT);
         cell.setAttribute("data-number", this.#mineCount);
@@ -100,9 +106,11 @@ class Cell {
       { once: true }
     );
 
+    // For flagging a cell
     cell.addEventListener("contextmenu", (event) => {
       event.preventDefault();
 
+      // Prevent flagging for an opened empty and count cell
       if (
         [CELL_TYPE.EMPTY, CELL_TYPE.COUNT].includes(
           cell.getAttribute("data-type")
@@ -115,12 +123,17 @@ class Cell {
         ...document.querySelectorAll(`.cell[data-type="${CELL_TYPE.FLAG}"]`),
       ].length;
 
+      // Flag doubt an already flagged cell
       if (cellDataType && cellDataType === CELL_TYPE.FLAG) {
         cell.setAttribute("data-type", CELL_TYPE.FLAGDOUBT);
         currentFlagCount.innerText = Number(currentFlagCount.innerText) - 1;
-      } else if (cellDataType && cellDataType === CELL_TYPE.FLAGDOUBT) {
+      }
+      // Remove flag doubt
+      else if (cellDataType && cellDataType === CELL_TYPE.FLAGDOUBT) {
         cell.removeAttribute("data-type");
-      } else {
+      }
+      // Set flag or flag doubt based on total flag count
+      else {
         cell.setAttribute(
           "data-type",
           flagCellsCount < grid.mines ? CELL_TYPE.FLAG : CELL_TYPE.FLAGDOUBT
@@ -130,6 +143,7 @@ class Cell {
           (flagCellsCount < grid.mines ? 1 : 0);
       }
     });
+
     this.#cell = cell;
     return cell;
   }
