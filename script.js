@@ -1,6 +1,23 @@
 const currentFlagCount = document.querySelector("[data-current-flag-count]");
 const totalFlagCount = document.querySelector("[data-total-flag-count]");
 
+const GRID_STATE = {
+  INITIAL: "initial",
+  PLAY: "play",
+  PAUSE: "pause",
+};
+
+const CELL_TYPE = {
+  COUNT: "count",
+  EMPTY: "empty",
+  FLAG: "flag",
+  FLAGDOUBT: "flag-doubt",
+  FLAGMINE: "flag-mine",
+  MINE: "mine",
+  MINEOPENED: "mine-opened",
+  NEW: "new",
+};
+
 class Cell {
   #row;
   #column;
@@ -48,7 +65,7 @@ class Cell {
   createCell(grid) {
     const cell = document.createElement("div");
     cell.classList.add("cell");
-    cell.setAttribute("data-type", "new");
+    cell.setAttribute("data-type", CELL_TYPE.NEW);
     cell.addEventListener(
       "click",
       () => {
@@ -57,19 +74,19 @@ class Cell {
 
         this.open = true;
         if (this.#isMine) {
-          cell.setAttribute("data-type", "mine-opened");
+          cell.setAttribute("data-type", CELL_TYPE.MINEOPENED);
           grid.gameLost();
           return;
         }
 
         if (this.#mineCount === 0) {
-          cell.setAttribute("data-type", "empty");
+          cell.setAttribute("data-type", CELL_TYPE.EMPTY);
           grid.openSurroundingCells(this);
           return;
         }
 
         cell.innerText = this.#mineCount;
-        cell.setAttribute("data-type", "count");
+        cell.setAttribute("data-type", CELL_TYPE.COUNT);
         cell.setAttribute("data-number", this.#mineCount);
 
         if (grid.checkIfWon()) grid.gameWon();
@@ -80,22 +97,27 @@ class Cell {
     cell.addEventListener("contextmenu", (event) => {
       event.preventDefault();
 
-      if (["empty", "count"].includes(cell.getAttribute("data-type"))) return;
+      if (
+        [CELL_TYPE.EMPTY, CELL_TYPE.COUNT].includes(
+          cell.getAttribute("data-type")
+        )
+      )
+        return;
 
       const cellDataType = cell.getAttribute("data-type");
       const flagCellsCount = [
-        ...document.querySelectorAll('.cell[data-type="flag"]'),
+        ...document.querySelectorAll(`.cell[data-type="${CELL_TYPE.FLAG}"]`),
       ].length;
 
-      if (cellDataType && cellDataType === "flag") {
-        cell.setAttribute("data-type", "flag-doubt");
+      if (cellDataType && cellDataType === CELL_TYPE.FLAG) {
+        cell.setAttribute("data-type", CELL_TYPE.FLAGDOUBT);
         currentFlagCount.innerText = Number(currentFlagCount.innerText) - 1;
-      } else if (cellDataType && cellDataType === "flag-doubt") {
+      } else if (cellDataType && cellDataType === CELL_TYPE.FLAGDOUBT) {
         cell.removeAttribute("data-type");
       } else {
         cell.setAttribute(
           "data-type",
-          flagCellsCount < grid.mines ? "flag" : "flag-doubt"
+          flagCellsCount < grid.mines ? CELL_TYPE.FLAG : CELL_TYPE.FLAGDOUBT
         );
         currentFlagCount.innerText =
           Number(currentFlagCount.innerText) +
@@ -254,9 +276,9 @@ class CellGrid {
     this.getAllCells().map((cell) => {
       if (cell.isMine && !cell.open) {
         const cellElement = cell.getCellElement();
-        if (cellElement.getAttribute("data-type") === "flag")
-          cellElement.setAttribute("data-type", "flag-mine");
-        else cellElement.setAttribute("data-type", "mine");
+        if (cellElement.getAttribute("data-type") === CELL_TYPE.FLAG)
+          cellElement.setAttribute("data-type", CELL_TYPE.FLAGMINE);
+        else cellElement.setAttribute("data-type", CELL_TYPE.MINE);
       }
     });
   }
